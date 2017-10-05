@@ -5,15 +5,12 @@ import {
   View,
 } from 'react-native';
 
-class User extends Component{
-  static navigationOptions = {
-    tabBarLabel: 'User'
-  };
+class Setting extends Component{
 
   render() {
     return (
       <View>
-        <Text>User</Text>
+        <Text>Setting</Text>
       </View>
     );
   }
@@ -23,4 +20,4 @@ const styles = StyleSheet.create({
 
 })
 
-export default User;
+export default Setting;

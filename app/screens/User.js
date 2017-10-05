@@ -5,15 +5,15 @@ import {
   View,
 } from 'react-native';
 
-class Repository extends Component{
+class User extends Component{
   static navigationOptions = {
-    tabBarLabel: 'Repository'
-  }
+    tabBarLabel: 'USER'
+  };
 
   render() {
     return (
       <View>
-        <Text>Repository</Text>
+        <Text>User</Text>
       </View>
     );
   }
@@ -23,4 +23,4 @@ const styles = StyleSheet.create({
 
 })
 
-export default Repository;
+export default User;
