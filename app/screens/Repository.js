@@ -11,6 +11,10 @@ import RepoItem from '../components/RepoItem';
 import { deviceH } from '../utils/index'
 
 class Repository extends Component{
+  static navigationOptions = {
+    tabBarLabel: 'REPOSITORY'
+  }
+
   constructor(props){
     super(props)
     this.state = {
@@ -30,10 +34,6 @@ class Repository extends Component{
         isRefreshing: false
       })
     }, 1500)
-  }
-
-  static navigationOptions = {
-    tabBarLabel: 'REPOSITORY'
   }
 
   loadMore = () => {
@@ -66,6 +66,7 @@ class Repository extends Component{
     return (
       <ScrollView
         contentContainerStyle={styles.container}
+        style={{backgroundColor: '#efefef'}}
         overScrollMode='always'
         onMomentumScrollBegin={this.loadMore}
         refreshControl={
@@ -73,9 +74,9 @@ class Repository extends Component{
             refreshing={this.state.isRefreshing}
             onRefresh={this._onRefresh}
             tintColor="#bbb"
-            style={{flex:1}}
+            style={{flex:1, backgroundColor:'#efefef'}}
             colors={['#ddd', '#0398ff']}
-            progressBackgroundColor="#ffffff"
+            progressBackgroundColor="#fff"
           />}>
         {
           this.state.data.map((item, index) => (
@@ -93,7 +94,7 @@ const styles = StyleSheet.create({
     padding: 15,
     minHeight: deviceH,
     backgroundColor: '#efefef',
-    justifyContent: 'center',
+    justifyContent: 'flex-start',
   }
 })
 

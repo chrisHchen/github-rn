@@ -7,11 +7,8 @@ import {
   Image,
   Animated,
 } from 'react-native';
-import Icon from 'react-native-vector-icons/Ionicons';
-import { deviceW } from '../utils/index'
-
-const containerPadding = 15
-const imageWidth = 40
+import ItemWrapper from './ItemWrapper'
+import ImageRender from './ImageRender'
 
 class RepoItem extends Component{
   constructor(props){
@@ -36,43 +33,10 @@ class RepoItem extends Component{
     ).start()
   }
 
-  _renderIcon = () => {
-    const {isLoaded, fadeAnim} = this.state
-    console.log(isLoaded);
-    return (
-      <View>
-        <Animated.View style={{
-          opacity: fadeAnim,
-        }}>
-          <Image
-            source={{uri: 'https://avatars2.githubusercontent.com/u/13569505?v=4&s=40'}}
-            onLoad={this.loaded}
-            style={[styles.image, {
-              width: isLoaded ? imageWidth: 1, // for ios
-              height: isLoaded ? imageWidth: 1,
-            }]} />
-        </Animated.View>
-        {
-          <Animated.View style={{
-            opacity: fadeAnim.interpolate({
-            inputRange: [0, 1],
-            outputRange: [1, 0]
-          }),
-          }}>
-            {
-              !isLoaded &&
-              <Icon style={styles.image} name="logo-github" size={40} color="#000"/>
-            }
-          </Animated.View>
-        }
-      </View>
-    )
-  }
-
   render() {
     return (
-      <View style={styles.container}>
-        {this._renderIcon()}
+      <ItemWrapper>
+        <ImageRender source={{uri: 'https://avatars2.githubusercontent.com/u/13569505?v=4&s=40'}}/>
         <View style={styles.contentBox}>
           <View style={styles.header}>
             <Text>RxJava</Text>
@@ -97,32 +61,12 @@ class RepoItem extends Component{
             </Text>
           </View>
         </View>
-      </View>
+      </ItemWrapper>
     );
   }
 }
 
 const styles = StyleSheet.create({
-  container: {
-    backgroundColor: '#fff',
-    borderRadius: 6,
-    flexDirection: 'row',
-    alignItems: 'center',
-    padding: containerPadding,
-    width: deviceW - 15*2, // for numberOfLines to work
-    marginBottom: 15,
-    elevation: 2,
-    shadowColor: '#000',
-    shadowOpacity: 0.2,
-    shadowOffset: { height: 0, width: 0 },
-    shadowRadius: 3,
-  },
-  image: {
-    borderRadius: imageWidth/2,
-    width: imageWidth,
-    height: imageWidth,
-    marginRight:10,
-  },
   contentBox: {
     flex: 1,
   },
