@@ -49,7 +49,7 @@ class Header extends Component{
     return this.state.isSearching ? (
       <Icon name="arrow-back" size={28} color="#fff" onPress={this.toggleSearch}/>
     ) : (
-      <Icon name="reorder" size={28} color="#fff" onPress={() => this.props.navigation.navigate('DrawerToggle')}/>
+      <Icon name="reorder" size={28} color="#fff" onPress={this.showSetting}/>
     )
   }
 

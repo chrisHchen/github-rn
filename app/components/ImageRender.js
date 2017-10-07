@@ -9,8 +9,6 @@ import {
 import Icon from 'react-native-vector-icons/Ionicons';
 import { px2dp } from '../utils/index'
 
-const imageWidth = 46
-
 class ImageRender extends Component{
   constructor(props){
     super(props)
@@ -36,18 +34,21 @@ class ImageRender extends Component{
 
   render() {
     const {isLoaded, fadeAnim} = this.state
+    const imageWidth = this.props.width || 46
+
     return (
-      <View style={{marginRight:px2dp(30)}}>
+      <View style={[{marginRight:px2dp(30)}, this.props.style]}>
         <Animated.View style={{
           opacity: fadeAnim,
         }}>
           <Image
             source={this.props.source}
             onLoad={this.loaded}
-            style={[styles.image, {
+            style={{
+              borderRadius: imageWidth/2,
               width: isLoaded ? imageWidth: 1, // for ios
               height: isLoaded ? imageWidth: 1,
-            }]} />
+            }} />
         </Animated.View>
         {
           <Animated.View style={{
@@ -58,7 +59,11 @@ class ImageRender extends Component{
           }}>
             {
               !isLoaded &&
-              <Icon style={styles.image} name="logo-github" size={40} color="#000"/>
+              <Icon style={{
+                borderRadius: imageWidth/2,
+                width: imageWidth,
+                height: imageWidth,
+              }} name="logo-github" size={40} color="#000"/>
             }
           </Animated.View>
         }
@@ -68,11 +73,7 @@ class ImageRender extends Component{
 }
 
 const styles = StyleSheet.create({
-  image: {
-    borderRadius: imageWidth/2,
-    width: imageWidth,
-    height: imageWidth,
-  },
+
 })
 
 export default ImageRender;

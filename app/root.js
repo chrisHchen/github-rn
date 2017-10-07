@@ -9,8 +9,10 @@ import {
 import { TabNavigator, DrawerNavigator } from 'react-navigation';
 import Repository from './screens/Repository'
 import User from './screens/User'
-import Setting from './screens/Setting'
+import Events from './screens/Events'
+import MyDrawer from './screens/MyDrawer'
 import Header from './components/Header'
+import { deviceW } from './utils/index'
 
 class MyApp extends Component{
 
@@ -65,11 +67,14 @@ const MainTabNavigator = TabNavigator({
 MyApp.router = MainTabNavigator.router;
 
 const MainDrawerNavigator = DrawerNavigator({
-  Home:{
+  Explore:{
     screen: MyApp,
   },
-  Setting:{
-    screen: Setting
+  Events:{
+    screen: Events,
   }
+}, {
+  drawerWidth: deviceW*0.8,
+  contentComponent: props => <MyDrawer {...props} />
 })
 export default MainDrawerNavigator;
