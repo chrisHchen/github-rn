@@ -64,7 +64,6 @@ class Repository extends Component{
 
   goDetail = () => {
     const {navigate} = this.props.navigation
-    console.log(1);
     navigate('RepoDetail', {name: 'x'})
   }
 

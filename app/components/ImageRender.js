@@ -63,7 +63,7 @@ class ImageRender extends Component{
                 borderRadius: imageWidth/2,
                 width: imageWidth,
                 height: imageWidth,
-              }} name="logo-github" size={40} color="#000"/>
+              }} name="logo-github" size={imageWidth} color="#000"/>
             }
           </Animated.View>
         }
