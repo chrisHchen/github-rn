@@ -62,6 +62,12 @@ class Repository extends Component{
     }, 1500)
   }
 
+  goDetail = () => {
+    const {navigate} = this.props.navigation
+    console.log(1);
+    navigate('RepoDetail', {name: 'x'})
+  }
+
   render() {
     return (
       <ScrollView
@@ -80,7 +86,7 @@ class Repository extends Component{
           />}>
         {
           this.state.data.map((item, index) => (
-            <RepoItem key={index}/>
+            <RepoItem key={index} onPress={this.goDetail}/>
           ))
         }
         {<ActivityIndicator style={{paddingBottom: 20}} animating={this.state.isLoading}/>}

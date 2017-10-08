@@ -33,9 +33,16 @@ class RepoItem extends Component{
     ).start()
   }
 
+  goDetail = () => {
+    const {onPress} = this.props
+    if(typeof onPress === 'function'){
+      onPress()
+    }
+  }
+
   render() {
     return (
-      <ItemWrapper>
+      <ItemWrapper onPress={this.goDetail}>
         <ImageRender source={{uri: 'https://avatars2.githubusercontent.com/u/13569505?v=4&s=40'}}/>
         <View style={styles.contentBox}>
           <View style={styles.header}>

@@ -5,6 +5,7 @@ import {
   View,
 } from 'react-native';
 import { deviceW } from '../utils/index'
+import Button from './Button'
 
 const containerPadding = 15
 
@@ -12,9 +13,11 @@ class ItemWrapper extends Component{
 
   render() {
     return (
-      <View style={styles.container}>
-        {this.props.children}
-      </View>
+      <Button {...this.props} style={{marginBottom: 15}}>
+        <View style={styles.container}>
+          {this.props.children}
+        </View>
+      </Button>
     );
   }
 }
@@ -27,7 +30,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     padding: containerPadding,
     width: deviceW - 15*2, // for numberOfLines to work
-    marginBottom: 15,
     elevation: 2,
     shadowColor: '#000',
     shadowOpacity: 0.2,
