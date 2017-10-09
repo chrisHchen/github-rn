@@ -4,6 +4,7 @@ import Explore from './screens/Explore'
 import Events from './screens/Events'
 import MyDrawer from './screens/MyDrawer'
 import RepoDetail from './screens/RepoDetail'
+import UserDetail from './screens/UserDetail'
 import { deviceW } from './utils/index'
 
 const MainDrawerNavigator = DrawerNavigator({
@@ -24,6 +25,9 @@ const MainStackNavigator = StackNavigator({
   },
   RepoDetail: {
     screen: RepoDetail
+  },
+  UserDetail: {
+    screen: UserDetail
   }
 }, {
   headerMode: 'none'

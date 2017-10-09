@@ -62,6 +62,11 @@ class User extends Component{
     }, 1500)
   }
 
+  goDetail = () => {
+    const {navigate} = this.props.navigation
+    navigate('UserDetail', {name: 'x'})
+  }
+
   render() {
     return (
       <ScrollView
@@ -80,7 +85,7 @@ class User extends Component{
           />}>
         {
           this.state.data.map((item, index) => (
-            <UserItem key={index}/>
+            <UserItem key={index} onPress={this.goDetail}/>
           ))
         }
         {<ActivityIndicator style={{paddingBottom: 20}} animating={this.state.isLoading}/>}
