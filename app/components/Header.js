@@ -7,6 +7,9 @@ import {
   TextInput
 } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
+import { px2dp } from '../utils/index'
+
+export const HEADER_HEIGHT = 52
 
 class Header extends Component{
   constructor(props){
@@ -66,7 +69,7 @@ class Header extends Component{
 
 const styles = StyleSheet.create({
   header:{
-    height: 52,
+    height: px2dp(HEADER_HEIGHT),
     flexDirection:'row',
     justifyContent: 'space-between',
     alignItems: 'center',

@@ -9,6 +9,7 @@ import {
 } from 'react-native';
 import ItemWrapper from './ItemWrapper'
 import ImageRender from './ImageRender'
+import { px2dp } from '../utils/index'
 
 class RepoItem extends Component{
   constructor(props){
@@ -82,6 +83,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
     marginBottom: 8,
+    overflow: 'hidden',
   },
   descContent: {
     color: '#ccc',

@@ -114,14 +114,14 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   headerDescContent: {
-    height: BG_HEIGHT,
+    height: px2dp(BG_HEIGHT),
     width: deviceW,
     position: 'relative',
   },
   headerDesc: {
     justifyContent:'flex-start',
     width: deviceW,
-    height: BG_HEIGHT,
+    height: px2dp(BG_HEIGHT),
     position:'absolute',
   },
   joinDate: {

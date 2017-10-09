@@ -95,6 +95,7 @@ class MyDrawer extends Component{
     // console.log(navigation);
     return (
       <ScrollView
+        showsVerticalScrollIndicator={false}
         style={{marginTop: (Platform.OS === 'ios' ? 20 : 0)}}
         onScroll={Animated.event(
           [{nativeEvent: {contentOffset: {y: this.state.scrollY}}}]

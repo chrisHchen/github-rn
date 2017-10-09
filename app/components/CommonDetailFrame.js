@@ -127,7 +127,9 @@ class CommonDetailFrame extends Component{
               )}
               contentContainerStyle={{minHeight:deviceH + BG_HEIGHT*2, padding: 15}}
               showsVerticalScrollIndicator={false}
-              scrollEventThrottle={16}>
+              scrollEventThrottle={16}
+              refreshControl={this.props.refreshControl}
+              >
               <Animated.View style={{
                 transform: [{translateY: this.state.transHeaderBar}],
               }}>

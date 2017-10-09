@@ -6,9 +6,13 @@ import {
   ScrollView,
   ActivityIndicator,
   RefreshControl,
+  Platform,
 } from 'react-native';
 import RepoItem from '../components/RepoItem';
-import { deviceH } from '../utils/index'
+import { deviceH, px2dp } from '../utils/index'
+import { HEADER_HEIGHT } from '../components/Header'
+
+const containerHeight = deviceH - px2dp(HEADER_HEIGHT) - 20
 
 class Repository extends Component{
   static navigationOptions = {
@@ -20,8 +24,11 @@ class Repository extends Component{
     this.state = {
       data: [],
       isLoading: false,
-      isRefreshing: true
+      isRefreshing: false
     }
+    // this.scrollY = 0
+    this.contentHeight = 0
+    // this.isLoading = false
   }
 
   componentDidMount() {
@@ -37,17 +44,20 @@ class Repository extends Component{
   }
 
   loadMore = () => {
+    // console.log(1);
     this.setState({
       isLoading: true
     })
-    const newData = this.state.data
-    newData.push(1,1)
+    // this.isLoading = true
     setTimeout(() => {
+      const newData = this.state.data
+      newData.push(1,1)
       this.setState({
         data: newData,
         isLoading: false
       })
-    }, 1500)
+      // this.isLoading = false
+    }, 1000)
   }
 
   _onRefresh = () => {
@@ -67,16 +77,34 @@ class Repository extends Component{
     navigate('RepoDetail', {name: 'x'})
   }
 
+  handleOnScroll = (event) => {
+    const offsetY = event.nativeEvent.contentOffset.y
+    const {isLoading} = this.state
+    // console.log(offsetY + containerHeight, this.contentHeight);
+    if(!isLoading && this.contentHeight !==0 && offsetY + containerHeight > this.contentHeight) {
+      this.loadMore()
+    }
+  }
+
+  handleContentSizeChange = (contentWidth, contentHeight) => {
+    this.contentHeight = contentHeight
+  }
+
   render() {
+    const {isLoading, isRefreshing, data} = this.state
+    // In android ActivityIndicator dont work well(dont know why), use opacity to work around
     return (
       <ScrollView
+        showsVerticalScrollIndicator={false}
+        onScroll={this.handleOnScroll}
+        scrollEventThrottle={20}
         contentContainerStyle={styles.container}
         style={{backgroundColor: '#efefef'}}
         overScrollMode='always'
-        onMomentumScrollBegin={this.loadMore}
+        onContentSizeChange={this.handleContentSizeChange}
         refreshControl={
           <RefreshControl
-            refreshing={this.state.isRefreshing}
+            refreshing={isRefreshing}
             onRefresh={this._onRefresh}
             tintColor="#bbb"
             style={{flex:1, backgroundColor:'#efefef'}}
@@ -84,11 +112,11 @@ class Repository extends Component{
             progressBackgroundColor="#fff"
           />}>
         {
-          this.state.data.map((item, index) => (
+          data.map((item, index) => (
             <RepoItem key={index} onPress={this.goDetail}/>
           ))
         }
-        {<ActivityIndicator style={{paddingBottom: 20}} animating={this.state.isLoading}/>}
+        {<ActivityIndicator style={{paddingBottom: 20}} animating={true} style={{opacity: isLoading ? 1: 0}}/>}
       </ScrollView>
     );
   }
@@ -97,7 +125,7 @@ class Repository extends Component{
 const styles = StyleSheet.create({
   container: {
     padding: 15,
-    minHeight: deviceH,
+    minHeight: containerHeight,
     backgroundColor: '#efefef',
     justifyContent: 'flex-start',
   }

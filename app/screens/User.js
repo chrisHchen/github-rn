@@ -6,9 +6,13 @@ import {
   ScrollView,
   RefreshControl,
   ActivityIndicator,
+  Platform,
 } from 'react-native';
 import UserItem from '../components/UserItem';
-import { deviceH } from '../utils/index'
+import { deviceH, px2dp } from '../utils/index'
+import { HEADER_HEIGHT } from '../components/Header'
+
+const containerHeight = deviceH - px2dp(HEADER_HEIGHT) - 20
 
 class User extends Component{
   static navigationOptions = {
@@ -40,14 +44,14 @@ class User extends Component{
     this.setState({
       isLoading: true
     })
-    const newData = this.state.data
-    newData.push(1,1)
     setTimeout(() => {
+      const newData = this.state.data
+      newData.push(1,1)
       this.setState({
         data: newData,
         isLoading: false
       })
-    }, 1500)
+    }, 1000)
   }
 
   _onRefresh = () => {
@@ -67,16 +71,33 @@ class User extends Component{
     navigate('UserDetail', {name: 'x'})
   }
 
+  handleOnScroll = (event) => {
+    const offsetY = event.nativeEvent.contentOffset.y
+    const { isLoading } = this.state
+    // console.log(offsetY + containerHeight, this.contentHeight);
+    if(!isLoading && this.contentHeight !==0 && offsetY + containerHeight > this.contentHeight) {
+      // console.log('yes');
+      this.loadMore()
+    }
+  }
+
+  handleContentSizeChange = (contentWidth, contentHeight) => {
+    this.contentHeight = contentHeight
+  }
+
   render() {
+    const {isLoading, isRefreshing, data} = this.state
     return (
       <ScrollView
+        showsVerticalScrollIndicator={false}
+        onScroll={this.handleOnScroll}
         contentContainerStyle={styles.container}
         style={{backgroundColor: '#efefef'}}
         overScrollMode='always'
-        onMomentumScrollBegin={this.loadMore}
+        onContentSizeChange={this.handleContentSizeChange}
         refreshControl={
           <RefreshControl
-            refreshing={this.state.isRefreshing}
+            refreshing={isRefreshing}
             onRefresh={this._onRefresh}
             tintColor="#bbb"
             style={{flex:1, backgroundColor:'#efefef'}}
@@ -84,11 +105,11 @@ class User extends Component{
             progressBackgroundColor="#fff"
           />}>
         {
-          this.state.data.map((item, index) => (
+          data.map((item, index) => (
             <UserItem key={index} onPress={this.goDetail}/>
           ))
         }
-        {<ActivityIndicator style={{paddingBottom: 20}} animating={this.state.isLoading}/>}
+        {<ActivityIndicator style={{paddingBottom: 20}} animating={true} style={{opacity: isLoading ? 1: 0}}/>}
       </ScrollView>
     );
   }
@@ -97,7 +118,7 @@ class User extends Component{
 const styles = StyleSheet.create({
   container: {
     padding: 15,
-    minHeight: deviceH,
+    minHeight: containerHeight,
     backgroundColor: '#efefef',
     justifyContent: 'flex-start',
   }
