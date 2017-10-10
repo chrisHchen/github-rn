@@ -11,7 +11,7 @@ import ItemWrapper from './ItemWrapper'
 import ImageRender from './ImageRender'
 import { px2dp } from '../utils/index'
 
-class RepoItem extends Component{
+class EventItem extends Component{
   constructor(props){
     super(props)
     this.state = {
@@ -47,25 +47,18 @@ class RepoItem extends Component{
         <ImageRender source={{uri: 'https://avatars2.githubusercontent.com/u/13569505?v=6&s=120'}} width={60}/>
         <View style={styles.contentBox}>
           <View style={styles.header}>
-            <Text>RxJava</Text>
-            <Text>Java</Text>
+            <Text numberOfLines={2}>
+              Where are we at with this decision? In my opinion it is embedded in the nature of
+            </Text>
           </View>
           <View style={styles.desc}>
-            <Text numberOfLines={3} style={styles.descContent}>
+            <Text numberOfLines={2} style={styles.descContent}>
               Used to truncate the text with an ellipsis after computing the text layout, including line wrapping, such that the total number of lines does not exceed this number.
             </Text>
           </View>
-          <View style={styles.stat}>
-            <Text style={{fontSize: 12}}>star:</Text>
-            <Text style={{fontSize: 12, marginRight: 5}}>100</Text>
-            <Text style={{fontSize: 12}}>fork:</Text>
-            <Text style={{fontSize: 12, marginRight: 5}}>1211</Text>
-            <Text style={{fontSize: 12}}>watcher:</Text>
-            <Text style={{fontSize: 12}}>32</Text>
-          </View>
           <View>
             <Text style={{fontSize: 12}}>
-              Updated at : 2017/01/02
+              9 hours ago
             </Text>
           </View>
         </View>
@@ -92,11 +85,7 @@ const styles = StyleSheet.create({
   },
   desc: {
     marginBottom: 8,
-  },
-  stat: {
-    flexDirection: 'row',
-    marginBottom: 8,
   }
 })
 
-export default RepoItem;
+export default EventItem;

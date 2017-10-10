@@ -13,6 +13,11 @@ import { px2dp, deviceW, deviceH } from '../utils/index'
 
 export const HeaderHeight = 160
 export const BG_HEIGHT = HeaderHeight + CommonHeaderHeight
+export const containerHeight = deviceH - 20
+
+const offsetBottom = 20 // offset at the bottom for loadMore to start
+const translateX = 25
+const scale = 0.7
 
 class CommonDetailFrame extends Component{
 
@@ -21,17 +26,23 @@ class CommonDetailFrame extends Component{
     const { cancelBgColorAnim } = this.props
     this.state = {
       scrollY: new Animated.Value(0),
-      translateY: 0,
-      transHeaderBar: 0,
+      // translateY: 0,
+      // transHeaderBar: 0,
       translateX: 0,
       scale: 1,
       opacity: 1,
       backgroundColor: cancelBgColorAnim ? 'transparent' : '#00ccff',
       top: this.props.top === undefined ? px2dp(CommonHeaderHeight) : this.props.top,
-      // height: px2dp(BG_HEIGHT),
+      // isLoading: false,
+      isStaticHeaderShow: false,
+      ScrollViewBgColor: '#eee', // for ios momentum scroll
     }
     this.startColor = cancelBgColorAnim ? 'transparent' : '#00ccff'
     this.toColor = cancelBgColorAnim ? 'transparent' : '#3399cc'
+
+    this.contentHeight = 0
+    this.isLoading = false
+    this.momentumBgColor = this.props.momentumBgColor || '#00ccff' // for ios momentum scroll
   }
 
   componentDidMount(){
@@ -41,11 +52,12 @@ class CommonDetailFrame extends Component{
     const bgColorInputRange = this.props.bgColorInputRange || [ 0, _HeaderHeight - 15, _HeaderHeight - 10, _HeaderHeight - 10]
     const bgColorOutputRange = this.props.bgColorOutputRange || [this.startColor , this.startColor, this.toColor, this.toColor]
     const opacityInputRange = this.props.opacityInputRange || [ 0, 0, _HeaderHeight - 15, _HeaderHeight - 15]
+    const _translateX = px2dp(translateX)
     this.setState({
-      translateY: scrollY.interpolate({inputRange: [ 0, 0, _HeaderHeight, _HeaderHeight], outputRange: [0 ,0 , -_HeaderHeight, -_HeaderHeight]}),
-      transHeaderBar : scrollY.interpolate({inputRange: [ 0, 0, _HeaderHeight, _HeaderHeight], outputRange: [0, 0 , _HeaderHeight, _HeaderHeight]}),
-      translateX : scrollY.interpolate({inputRange: [ 0, 0, _HeaderHeight, _HeaderHeight], outputRange: [0, 0 , px2dp(25), px2dp(25)]}),
-      scale : scrollY.interpolate({inputRange: [ 0, 0, _HeaderHeight, _HeaderHeight], outputRange: [1, 1 , 0.7, 0.7]}),
+      // translateY: scrollY.interpolate({inputRange: [ 0, _HeaderHeight, _HeaderHeight + 100], outputRange: [0 , 0 , 100]}),
+      // transHeaderBar : scrollY.interpolate({inputRange: [ 0, 0, _HeaderHeight, _HeaderHeight], outputRange: [0, 0 , _HeaderHeight, _HeaderHeight]}),
+      translateX : scrollY.interpolate({inputRange: [ 0, 0, _HeaderHeight, _HeaderHeight], outputRange: [0, 0 , _translateX, _translateX]}),
+      scale : scrollY.interpolate({inputRange: [ 0, 0, _HeaderHeight, _HeaderHeight], outputRange: [1, 1 , scale, scale]}),
       opacity : scrollY.interpolate({inputRange: opacityInputRange, outputRange: [1, 1 , 0, 0]}),
       top : scrollY.interpolate({inputRange: [ 0, 0, _HeaderHeight], outputRange: [top, top, top  + px2dp(80)]}),
       backgroundColor : scrollY.interpolate({inputRange: bgColorInputRange, outputRange: bgColorOutputRange}),
@@ -66,11 +78,9 @@ class CommonDetailFrame extends Component{
   _renderHeaderBg = () => {
     const { cancelBgColorAnim, cancelOpacity } = this.props
     const style = {
-      animHeaderBg : cancelBgColorAnim ? {
-        transform: [{ translateY: this.state.translateY }],
+      animHeaderBg: cancelBgColorAnim ? {
       } : {
         backgroundColor: this.state.backgroundColor,
-        transform: [{ translateY: this.state.translateY }],
       },
       animHeaderDesc: cancelOpacity ? {
         top: this.state.top,
@@ -86,20 +96,6 @@ class CommonDetailFrame extends Component{
 
     return (
       <Animated.View style={[styles.headerBg, style.animHeaderBg]}>
-        <Animated.View style={[styles.commonHeader,{
-          transform: [{ translateY: this.state.transHeaderBar }],
-        }]}>
-          <CommonHeader
-            left={
-              this.props.headerLeft ||
-              <Icon name="arrow-back" size={28} color="#fff" onPress={this.leftPress}/>
-            }
-            right={
-              this.props.headerRight ||
-              <Icon name="share" size={28} color="#fff" onPress={this.rightPress}/>
-            }
-            style={{backgroundColor: 'transparent'}}/>
-        </Animated.View>
         {
           this.props.headerDesc &&
           <Animated.View style={[this.props.headerDescStyle, style.animHeaderDesc]}>
@@ -107,36 +103,120 @@ class CommonDetailFrame extends Component{
           </Animated.View>
         }
         <Animated.View style={[styles.repoName, style.animRepoName]}>
-          <Text style={{color:'#fff', fontSize: 30, fontWeight: '600', backgroundColor: 'transparent'}}>{this.props.boldName}</Text>
+          <Text style={styles.originalText}>{this.props.boldName}</Text>
         </Animated.View>
       </Animated.View>
     )
   }
 
+  _renderCommonHeader = () => {
+    const { isStaticHeaderShow } = this.state
+
+    return (
+      <CommonHeader
+        left={
+          this.props.headerLeft ||
+          <Icon name="arrow-back" size={28} color="#fff" onPress={this.leftPress}/>
+        }
+        right={
+          this.props.headerRight ||
+          <Icon name="share" size={28} color="#fff" onPress={this.rightPress}/>
+        }
+        style={[styles.commonHeader,{
+          opacity:  isStaticHeaderShow ? 0 : 1
+        }]}
+      />
+    )
+  }
+
+  _renderStaticHeader = () => {
+    const { isStaticHeaderShow } = this.state
+    return (
+      <CommonHeader
+        left={
+          <View style={{flexDirection: 'row', alignItems: 'center', position:'relative'}}>
+            {this.props.headerLeft || <Icon name="arrow-back" size={28} color="#fff" onPress={this.leftPress}/>}
+            <Text style={[styles.originalText, {
+              transform:[{translateX: px2dp(translateX)},
+                        {scale: scale}],
+              position:'absolute',
+            }]}>{this.props.boldName}</Text>
+          </View>
+        }
+        right={
+          this.props.headerRight ||
+          <Icon name="share" size={28} color="#fff" onPress={this.rightPress}/>
+        }
+        style={[styles.staticCommonHeader,{
+          backgroundColor:  isStaticHeaderShow ? '#3399cc' : 'transparent',
+          opacity:  isStaticHeaderShow ? 1 : 0
+        }]}
+      />
+    )
+  }
+
+  handleOnScroll = (event) => {
+    const { isStaticHeaderShow, ScrollViewBgColor } = this.state
+
+    Animated.event(
+      [{nativeEvent: {contentOffset: {y: this.state.scrollY}}}]
+    )(event)
+
+    const offsetY = event.nativeEvent.contentOffset.y
+    // console.log(offsetY);
+    if(offsetY >= px2dp(HeaderHeight) && !isStaticHeaderShow){
+      this.setState({
+        isStaticHeaderShow: true
+      })
+    } else if(offsetY < px2dp(HeaderHeight) && isStaticHeaderShow){
+      this.setState({
+        isStaticHeaderShow: false
+      })
+    }
+
+    if(offsetY <= 0 && ScrollViewBgColor === '#eee' ) {
+      this.setState({
+        ScrollViewBgColor: this.momentumBgColor
+      })
+    } else if (offsetY > 0 && ScrollViewBgColor === this.momentumBgColor ) {
+      this.setState({
+        ScrollViewBgColor: "#eee"
+      })
+    }
+
+    // console.log(offsetY, offsetY + containerHeight, this.contentHeight);
+    if(!this.isLoading && this.contentHeight !==0 && offsetY + containerHeight >= this.contentHeight - offsetBottom) {
+      this.isLoading = true
+      this.props.onLoadMore && this.props.onLoadMore(() => {
+        this.isLoading = false
+      })
+    }
+  }
+
+  handleContentSizeChange = (contentWidth, contentHeight) => {
+    this.contentHeight = contentHeight
+  }
+
   render() {
+    const  { ScrollViewBgColor } = this.state
     return (
       <View style={styles.box}>
-          {this._renderHeaderBg()}
-          <Animated.View
-            style={[styles.topView, {
-              transform: [{ translateY: this.state.translateY }]
-            }]}>
-            <ScrollView
-              onScroll={Animated.event(
-                [{nativeEvent: {contentOffset: {y: this.state.scrollY}}}]
-              )}
-              contentContainerStyle={{minHeight:deviceH + BG_HEIGHT*2, padding: 15}}
-              showsVerticalScrollIndicator={false}
-              scrollEventThrottle={16}
-              refreshControl={this.props.refreshControl}
-              >
-              <Animated.View style={{
-                transform: [{translateY: this.state.transHeaderBar}],
-              }}>
+          {this._renderStaticHeader()}
+          {this._renderCommonHeader()}
+          <ScrollView
+            style={{flex:1, backgroundColor: ScrollViewBgColor}}
+            onScroll={this.handleOnScroll}
+            contentContainerStyle={{justifyContent: 'flex-start'}}
+            showsVerticalScrollIndicator={false}
+            scrollEventThrottle={16}
+            onContentSizeChange={this.handleContentSizeChange}
+            >
+              {this._renderHeaderBg()}
+              <View style={{padding: 15, backgroundColor: '#eee'}}>
                 { this.props.children }
-              </Animated.View>
-            </ScrollView>
-          </Animated.View>
+              </View>
+              {this.props.ActivityIndicator}
+          </ScrollView>
       </View>
     );
   }
@@ -146,10 +226,11 @@ const styles = StyleSheet.create({
   box: {
     marginTop: (Platform.OS === 'ios' ? 20 : 0),
     position: 'relative',
+    flex: 1,
   },
   headerBg: {
     position: 'relative',
-    overflow: 'hidden',
+    // overflow: 'hidden',
     height: px2dp(BG_HEIGHT)
   },
   commonHeader: {
@@ -158,7 +239,20 @@ const styles = StyleSheet.create({
     top:0,
     left:0,
     right:0,
-    zIndex: 100,
+    zIndex: 11,
+  },
+  staticCommonHeader: {
+    position:'absolute',
+    top:0,
+    left:0,
+    right:0,
+    zIndex: 11,
+  },
+  originalText: {
+    color:'#fff',
+    fontSize: 30,
+    fontWeight: '600',
+    backgroundColor: 'transparent'
   },
   repoName: {
     position: 'absolute',

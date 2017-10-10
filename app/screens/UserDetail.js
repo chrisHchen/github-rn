@@ -63,11 +63,39 @@ class UserDetail extends Component{
 
   constructor(props){
     super(props)
+    this.state = {
+      bgScale: 1,
+      bgY: 0,
+      height: px2dp(BG_HEIGHT)
+    }
+  }
+
+  componentDidMount(){
+    const {scrollY} = this.detailFrame.state
+    const _BG_HEIGHT = px2dp(BG_HEIGHT)
+    this.setState({
+      bgScale: scrollY.interpolate({inputRange: [ -_BG_HEIGHT, 0, _BG_HEIGHT],outputRange: [1.5, 1, 1]}),
+      bgY: scrollY.interpolate({inputRange: [ -_BG_HEIGHT, 0, 0],outputRange: [-_BG_HEIGHT, 0, 0]}),
+      height: scrollY.interpolate({inputRange: [ -_BG_HEIGHT, 0, 0],outputRange: [_BG_HEIGHT*2 , _BG_HEIGHT, _BG_HEIGHT]})
+    })
   }
 
   _renderHeaderDesc = () => {
     return (
-      <ImageBackground style={styles.headerDescContent} source={{uri: 'https://avatars2.githubusercontent.com/u/13569505?v=4'}}>
+      <Animated.View style={[styles.headerDescContent, {
+        // height: this.state.height
+      }]}>
+        <Animated.Image source={{uri: 'https://avatars2.githubusercontent.com/u/13569505?v=4'}} style={[{
+          top:0,
+          left:0,
+          width: '100%',
+          position: 'absolute',
+          resizeMode: 'cover'
+        },{
+            transform: [{ translateY:this.state.bgY },
+                        { scale: this.state.bgScale }],
+            height: this.state.height
+        }]}></Animated.Image>
         <View style={styles.headerDescContent}>
           <View style={{alignItems: 'center', justifyContent:'flex-start', top: px2dp(30)}}>
             <ImageRender
@@ -80,7 +108,7 @@ class UserDetail extends Component{
           </View>
           <Text style={styles.joinDate}>Join: 2009/03/15</Text>
         </View>
-      </ImageBackground>
+      </Animated.View>
     )
   }
 
@@ -88,13 +116,15 @@ class UserDetail extends Component{
     const _HeaderHeight = px2dp(HeaderHeight)
     return (
       <CommonDetailFrame
+        ref={(el) => this.detailFrame = el}
         navigation={this.props.navigation}
         headerDesc={this._renderHeaderDesc()}
         headerDescStyle={styles.headerDesc}
         top={0}
         bgColorOutputRange={['transparent' , '#00ccff', '#3399cc', '#3399cc']}
         opacityInputRange={[ 0, _HeaderHeight - 50, _HeaderHeight - 10, _HeaderHeight - 10]}
-        boldName='chrisHchen'>
+        boldName='chrisHchen'
+        momentumBgColor='transparent'>
         <View>
           <InfoBox data={data.main} type='strip'/>
           <InfoBox data={data.event} />

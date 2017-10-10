@@ -5,8 +5,10 @@ import {
   View,
   Platform,
   RefreshControl,
+  ActivityIndicator,
 } from 'react-native';
 import CommonHeader from '../components/CommonHeader'
+import EventItem from '../components/EventItem'
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import CommonDetailFrame from '../components/CommonDetailFrame'
 
@@ -17,23 +19,18 @@ class Events extends Component{
     this.state = {
       data: [],
       isLoading: false,
-      isRefreshing: true
     }
   }
 
   componentDidMount() {
-    this.setState({
-      isRefreshing: true
-    })
     setTimeout(() => {
       this.setState({
         data: [0,1,2,3,4,5],
-        isRefreshing: false
       })
-    }, 1500)
+    }, 1000)
   }
 
-  loadMore = () => {
+  loadMore = (cb) => {
     this.setState({
       isLoading: true
     })
@@ -44,19 +41,8 @@ class Events extends Component{
         data: newData,
         isLoading: false
       })
-    }, 1500)
-  }
-
-  _onRefresh = () => {
-    this.setState({
-      isRefreshing: true
-    })
-    setTimeout(() => {
-      this.setState({
-        data: [0,1,2,3,4,5],
-        isRefreshing: false
-      })
-    }, 1500)
+      cb && cb()
+    }, 1000)
   }
 
   showSetting = () => {
@@ -64,6 +50,7 @@ class Events extends Component{
   }
 
   render() {
+    const { data, isLoading } = this.state
     return (
       <CommonDetailFrame
         navigation={this.props.navigation}
@@ -74,17 +61,17 @@ class Events extends Component{
           <Icon name="refresh" size={28} color="#fff"/>
         }
         boldName='Events'
-        refreshControl={
-          <RefreshControl
-            refreshing={this.state.isRefreshing}
-            onRefresh={this._onRefresh}
-            tintColor="#bbb"
-            style={{flex:1, backgroundColor:'#efefef'}}
-            colors={['#ddd', '#0398ff']}
-            progressBackgroundColor="#fff"
-          />}>
+        ActivityIndicator={
+          <ActivityIndicator style={{paddingBottom: 20}} animating={true} style={{opacity: isLoading ? 1: 0}}/>
+        }
+        onLoadMore={this.loadMore}>
         <View>
-
+          {
+            data.length === 0 ? <ActivityIndicator style={{paddingBottom: 20}} animating={true}/> :
+            data.map((item, index) => (
+              <EventItem key={index}/>
+            ))
+          }
         </View>
       </CommonDetailFrame>
     );

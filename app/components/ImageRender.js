@@ -34,7 +34,7 @@ class ImageRender extends Component{
 
   render() {
     const {isLoaded, fadeAnim} = this.state
-    const imageWidth = this.props.width || 46
+    const imageWidth = px2dp(this.props.width || 46)
 
     return (
       <View style={[{marginRight:px2dp(30)}, this.props.style]}>

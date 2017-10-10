@@ -54,12 +54,12 @@ class MyDrawer extends Component{
   }
 
   componentDidMount(){
-    let marginTop = px2dp(200)
+    let marginTop = px2dp(220)
     let { scrollY } = this.state
     this.setState({
       bgScale: scrollY.interpolate({inputRange: [ -marginTop, 0, marginTop],outputRange: [1.5, 1, 1]}),
       bgY: scrollY.interpolate({inputRange: [ -marginTop, 0, marginTop],outputRange: [-marginTop, 0, marginTop]}),
-      height: scrollY.interpolate({inputRange: [ -marginTop, 0],outputRange: [px2dp(220)*2 , px2dp(220)]})
+      height: scrollY.interpolate({inputRange: [ -marginTop, 0],outputRange: [marginTop*2 , marginTop]})
     })
   }
 
@@ -82,7 +82,7 @@ class MyDrawer extends Component{
             height: this.state.height
         }]}></Animated.Image>
         <View style={styles.headerInner}>
-          <ImageRender width={60} source={{uri: 'https://avatars2.githubusercontent.com/u/13569505?v=4&s=40'}} style={{marginBottom: 10}}/>
+          <ImageRender width={60} source={{uri: 'https://avatars2.githubusercontent.com/u/13569505?v=4&s=100'}} style={{marginBottom: 10}}/>
           <Text style={{backgroundColor:'transparent', color: '#fff', marginBottom: 5}}>chrisHchen</Text>
           <Text style={{backgroundColor:'transparent', color: '#bbb'}}>Join: 2017/07/30</Text>
         </View>

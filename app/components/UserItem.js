@@ -44,7 +44,7 @@ class UserItem extends Component{
   render() {
     return (
       <ItemWrapper onPress={this.goDetail}>
-        <ImageRender source={{uri: 'https://avatars2.githubusercontent.com/u/13569505?v=4&s=40'}}/>
+        <ImageRender source={{uri: 'https://avatars2.githubusercontent.com/u/13569505?v=4&s=80'}}/>
         <View style={styles.contentBox}>
           <Text>ChrisHchen</Text>
         </View>

@@ -43,7 +43,7 @@ const styles = StyleSheet.create({
   dataItem: {
     marginLeft: px2dp(20),
     flexDirection: 'row',
-    height: px2dp(40),
+    height: px2dp(50),
     justifyContent:'flex-start',
     alignItems: 'center',
     borderBottomColor: '#eee',
