@@ -7,11 +7,11 @@ import {
   RefreshControl,
   ActivityIndicator,
 } from 'react-native';
-import EventItem from '../components/EventItem'
+import RepoItem from '../components/RepoItem'
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import CommonDetailFrame from '../components/CommonDetailFrame'
 
-class Events extends Component{
+class Starred extends Component{
 
   constructor(props){
     super(props)
@@ -59,7 +59,7 @@ class Events extends Component{
         right={
           <Icon name="refresh" size={28} color="#fff"/>
         }
-        boldName='Events'
+        boldName='Starred'
         ActivityIndicator={
           <ActivityIndicator style={{paddingBottom: 20}} animating={true} style={{opacity: isLoading ? 1: 0}}/>
         }
@@ -68,7 +68,7 @@ class Events extends Component{
           {
             data.length === 0 ? <ActivityIndicator style={{paddingBottom: 20}} animating={true}/> :
             data.map((item, index) => (
-              <EventItem key={index}/>
+              <RepoItem key={index}/>
             ))
           }
         </View>
@@ -81,4 +81,4 @@ const styles = StyleSheet.create({
 
 })
 
-export default Events;
+export default Starred;

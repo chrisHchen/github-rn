@@ -51,6 +51,7 @@ class MyDrawer extends Component{
       bgY: 0,
       height: px2dp(220),
     }
+    this.lastRouteName = undefined
   }
 
   componentDidMount(){
@@ -63,10 +64,17 @@ class MyDrawer extends Component{
     })
   }
 
+  componentWillUnmount() {
+    this.lastRouteName = null
+  }
+
   handlePress = (d) => () => {
     const {navigation} = this.props
+    const lastRouteName = this.lastRouteName
+    this.lastRouteName = d.name
     if(typeof navigation.navigate === 'function'){
-      navigation.navigate(d.name)
+      // navigation.navigate('DrawerClose')
+      navigation.navigate(d.name, {backRouterName: lastRouteName})
     }
   }
 

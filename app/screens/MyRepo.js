@@ -7,11 +7,12 @@ import {
   RefreshControl,
   ActivityIndicator,
 } from 'react-native';
-import EventItem from '../components/EventItem'
+import CommonHeader from '../components/CommonHeader'
+import RepoItem from '../components/RepoItem';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import CommonDetailFrame from '../components/CommonDetailFrame'
 
-class Events extends Component{
+class MyRepo extends Component{
 
   constructor(props){
     super(props)
@@ -48,6 +49,11 @@ class Events extends Component{
     this.props.navigation.navigate('DrawerToggle');
   }
 
+  goDetail = () => {
+    const {navigate} = this.props.navigation
+    navigate('RepoDetail', {name: 'x'})
+  }
+  
   render() {
     const { data, isLoading } = this.state
     return (
@@ -59,7 +65,7 @@ class Events extends Component{
         right={
           <Icon name="refresh" size={28} color="#fff"/>
         }
-        boldName='Events'
+        boldName='Repository'
         ActivityIndicator={
           <ActivityIndicator style={{paddingBottom: 20}} animating={true} style={{opacity: isLoading ? 1: 0}}/>
         }
@@ -68,7 +74,7 @@ class Events extends Component{
           {
             data.length === 0 ? <ActivityIndicator style={{paddingBottom: 20}} animating={true}/> :
             data.map((item, index) => (
-              <EventItem key={index}/>
+              <RepoItem key={index} onPress={this.goDetail}/>
             ))
           }
         </View>
@@ -81,4 +87,4 @@ const styles = StyleSheet.create({
 
 })
 
-export default Events;
+export default MyRepo;

@@ -8,15 +8,15 @@ import {
   RefreshControl,
   Platform,
 } from 'react-native';
-import RepoItem from '../components/RepoItem';
+import UserItem from '../components/UserItem';
 import { deviceH, px2dp } from '../utils/index'
-import { HEADER_HEIGHT } from '../components/Header'
+import { CommonHeaderHeight } from '../components/CommonHeader'
 
-const containerHeight = deviceH - px2dp(HEADER_HEIGHT) - 20
+const containerHeight = deviceH - px2dp(CommonHeaderHeight) - 20
 
-class Repository extends Component{
+class Following extends Component{
   static navigationOptions = {
-    tabBarLabel: 'REPOSITORY'
+    tabBarLabel: 'FOLLOWINGS'
   }
 
   constructor(props){
@@ -74,7 +74,7 @@ class Repository extends Component{
 
   goDetail = () => {
     const {navigate} = this.props.navigation
-    navigate('RepoDetail', {name: 'x'})
+    navigate('UserDetail', {name: 'x'})
   }
 
   handleOnScroll = (event) => {
@@ -113,7 +113,7 @@ class Repository extends Component{
           />}>
         {
           data.map((item, index) => (
-            <RepoItem key={index} onPress={this.goDetail}/>
+            <UserItem key={index} onPress={this.goDetail}/>
           ))
         }
         {<ActivityIndicator style={{paddingBottom: 20}} animating={true} style={{opacity: isLoading ? 1: 0}}/>}
@@ -131,4 +131,4 @@ const styles = StyleSheet.create({
   }
 })
 
-export default Repository;
+export default Following;

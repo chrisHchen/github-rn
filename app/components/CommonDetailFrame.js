@@ -227,6 +227,7 @@ const styles = StyleSheet.create({
     marginTop: (Platform.OS === 'ios' ? 20 : 0),
     position: 'relative',
     flex: 1,
+    justifyContent: 'flex-start'
   },
   headerBg: {
     position: 'relative',

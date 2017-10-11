@@ -16,15 +16,26 @@ class InfoBox extends Component{
         {
           this.props.data.map((d, index) => (
             <Button key={index} onPress={d.onPress}>
-              <View style={{flexDirection: 'row', alignItems: 'center'}}>
-                <View style={styles.dataItem}>
-                  <Text style={{marginRight: 10}}>{d.title}</Text>
-                  <Text>{d.value}</Text>
+              <View style={styles.rowCenter}>
+                <View style={[styles.rowCenter,{flex: 1}]}>
+                  <View style={{width: px2dp(20)}}>
+                    {
+                      this.props.type === 'strip' ?
+                      <View style={styles.strip}/> :
+                      <Icon style={styles.arrow} name="keyboard-arrow-right" size={16} color="#000"/>
+                    }
+                  </View>
+                  <View style={styles.dataItem}>
+                    <Text style={{marginRight: 10}}>{d.title}</Text>
+                    <Text>{d.value}</Text>
+                  </View>
+
                 </View>
                 {
-                  this.props.type === 'strip' ?
-                  <View style={styles.strip}/> :
-                  <Icon style={styles.arrow} name="keyboard-arrow-right" size={16} color="#000"/>
+                  d.rightIcon &&
+                  <View style={{width: px2dp(40)}}>
+                    {d.rightIcon}
+                  </View>
                 }
               </View>
             </Button>
@@ -39,29 +50,28 @@ const styles = StyleSheet.create({
   dataBox: {
     marginBottom: 15,
     backgroundColor: '#fff',
+    width: '100%'
+  },
+  rowCenter: {
+    flexDirection: 'row',
+    alignItems: 'center'
   },
   dataItem: {
-    marginLeft: px2dp(20),
     flexDirection: 'row',
     height: px2dp(50),
     justifyContent:'flex-start',
     alignItems: 'center',
     borderBottomColor: '#eee',
     borderBottomWidth: 1,
-    position: 'relative',
-    overflow: 'visible',
-    flex: 1,
+    flex: 1
   },
   strip: {
-    position: 'absolute',
     width: 2,
     backgroundColor: '#ffcc33',
     height: px2dp(26),
-    left: 0,
   },
   arrow: {
-    position: 'absolute',
-    left: 0
+    width: px2dp(20)
   }
 })
 

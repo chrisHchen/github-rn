@@ -37,7 +37,7 @@ class User extends Component{
         data: [0,1,2,3,4,5],
         isRefreshing: false
       })
-    }, 1500)
+    }, 1000)
   }
 
   loadMore = () => {
