@@ -42,11 +42,12 @@ class UserItem extends Component{
   }
 
   render() {
+    const {item} = this.props
     return (
       <ItemWrapper onPress={this.goDetail}>
-        <ImageRender source={{uri: 'https://avatars2.githubusercontent.com/u/13569505?v=4&s=80'}}/>
+        <ImageRender source={{uri: `${item.avatar}?v=4&s=100`}}/>
         <View style={styles.contentBox}>
-          <Text>ChrisHchen</Text>
+          <Text>{item.owner}</Text>
         </View>
       </ItemWrapper>
     );

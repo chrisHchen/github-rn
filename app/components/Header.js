@@ -4,7 +4,8 @@ import {
   Text,
   View,
   Platform,
-  TextInput
+  TextInput,
+  Animated
 } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import { px2dp } from '../utils/index'
@@ -15,8 +16,10 @@ class Header extends Component{
   constructor(props){
     super(props)
     this.state = {
-      isSearching: false
+      isSearchShow: false,
+      rotate: new Animated.Value(0)
     }
+    this.rotateCounter = 0
   }
 
   showSetting = () => {
@@ -25,12 +28,34 @@ class Header extends Component{
 
   toggleSearch = () => {
     this.setState({
-      isSearching: !this.state.isSearching
+      isSearchShow: !this.state.isSearchShow
     })
   }
 
+  handleRefresh = () => {
+    const {onRefresh} = this.props
+    this.rotateCounter = this.rotateCounter + 1
+    Animated.timing(
+      this.state.rotate,
+      {
+        toValue: this.rotateCounter * 360,
+        // useNativeDriver: true,
+      }
+    ).start()
+    if(typeof onRefresh === 'function'){
+      onRefresh()
+    }
+  }
+
+  handleSearch = () => {
+    const {onSearch} = this.props
+    if(typeof onSearch === 'function'){
+      onSearch()
+    }
+  }
+
   _renderSearch = () => {
-    return this.state.isSearching ? (
+    return this.state.isSearchShow ? (
       <View style={styles.searchBox}>
         <TextInput
           ref={(el) => this.searchInput = el}
@@ -49,7 +74,7 @@ class Header extends Component{
   }
 
   _renderLeftIcon = () => {
-    return this.state.isSearching ? (
+    return this.state.isSearchShow ? (
       <Icon name="arrow-back" size={28} color="#fff" onPress={this.toggleSearch}/>
     ) : (
       <Icon name="reorder" size={28} color="#fff" onPress={this.showSetting}/>
@@ -61,7 +86,14 @@ class Header extends Component{
       <View style={styles.header}>
         {this._renderLeftIcon()}
         {this._renderSearch()}
-        <Icon name="refresh" size={28} color="#fff"/>
+        <Animated.View style={{
+          transform: [{rotateZ: this.state.rotate.interpolate({
+                              inputRange: [0, 360],
+                              outputRange: ['0deg', '360deg']
+        })}]
+        }}>
+          <Icon name="refresh" size={28} color="#fff" onPress={this.handleRefresh}/>
+        </Animated.View>
       </View>
     );
   }

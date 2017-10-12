@@ -29,7 +29,6 @@ class InfoBox extends Component{
                     <Text style={{marginRight: 10}}>{d.title}</Text>
                     <Text>{d.value}</Text>
                   </View>
-
                 </View>
                 {
                   d.rightIcon &&

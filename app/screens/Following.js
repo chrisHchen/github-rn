@@ -11,6 +11,7 @@ import {
 import UserItem from '../components/UserItem';
 import { deviceH, px2dp } from '../utils/index'
 import { CommonHeaderHeight } from '../components/CommonHeader'
+import {data} from '../data'
 
 const containerHeight = deviceH - px2dp(CommonHeaderHeight) - 20
 
@@ -37,7 +38,7 @@ class Following extends Component{
     })
     setTimeout(() => {
       this.setState({
-        data: [0,1,2,3,4,5],
+        data: data,
         isRefreshing: false
       })
     }, 1000)
@@ -50,8 +51,7 @@ class Following extends Component{
     })
     // this.isLoading = true
     setTimeout(() => {
-      const newData = this.state.data
-      newData.push(1,1)
+      const newData = this.state.data.concat(data)
       this.setState({
         data: newData,
         isLoading: false
@@ -66,15 +66,15 @@ class Following extends Component{
     })
     setTimeout(() => {
       this.setState({
-        data: [0,1,2,3,4,5],
+        data: data,
         isRefreshing: false
       })
     }, 1000)
   }
 
-  goDetail = () => {
+  goDetail = (item) => () => {
     const {navigate} = this.props.navigation
-    navigate('UserDetail', {name: 'x'})
+    navigate('UserDetail', {repo: item})
   }
 
   handleOnScroll = (event) => {
@@ -113,7 +113,7 @@ class Following extends Component{
           />}>
         {
           data.map((item, index) => (
-            <UserItem key={index} onPress={this.goDetail}/>
+            <UserItem item={item} key={index} onPress={this.goDetail(item)}/>
           ))
         }
         {<ActivityIndicator style={{paddingBottom: 20}} animating={true} style={{opacity: isLoading ? 1: 0}}/>}

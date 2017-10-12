@@ -203,12 +203,12 @@ class CommonDetailFrame extends Component{
       <View style={styles.box}>
           {this._renderStaticHeader()}
           {this._renderCommonHeader()}
-          <ScrollView
+          <Animated.ScrollView
             style={{flex:1, backgroundColor: ScrollViewBgColor}}
             onScroll={this.handleOnScroll}
             contentContainerStyle={{justifyContent: 'flex-start'}}
             showsVerticalScrollIndicator={false}
-            scrollEventThrottle={16}
+            scrollEventThrottle={1}
             onContentSizeChange={this.handleContentSizeChange}
             >
               {this._renderHeaderBg()}
@@ -216,7 +216,7 @@ class CommonDetailFrame extends Component{
                 { this.props.children }
               </View>
               {this.props.ActivityIndicator}
-          </ScrollView>
+          </Animated.ScrollView>
       </View>
     );
   }

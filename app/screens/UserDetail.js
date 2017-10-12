@@ -81,11 +81,14 @@ class UserDetail extends Component{
   }
 
   _renderHeaderDesc = () => {
+    const {state} = this.props.navigation
+    const {repo} = state.params
+
     return (
       <Animated.View style={[styles.headerDescContent, {
         // height: this.state.height
       }]}>
-        <Animated.Image source={{uri: 'https://avatars2.githubusercontent.com/u/13569505?v=4'}} style={[{
+        <Animated.Image source={{uri: `${repo.avatar}?v=4`}} style={[{
           top:0,
           left:0,
           width: '100%',
@@ -102,17 +105,21 @@ class UserDetail extends Component{
               style={{
                 marginRight: 0
               }}
-              source={{uri: 'https://avatars2.githubusercontent.com/u/13569505?v=6&s=100'}}
+              source={{uri: `${repo.avatar}?v=6&s=100`}}
               width={px2dp(80)}/>
-            <Text style={{color:"#fff", marginTop: 10, fontSize: 18, textAlign: 'center', backgroundColor: 'transparent'}}>chrisHchen</Text>
+            <Text style={{color:"#fff", marginTop: 10, fontSize: 18, textAlign: 'center', backgroundColor: 'transparent'}}>
+              {repo.owner}
+            </Text>
           </View>
-          <Text style={styles.joinDate}>Join: 2009/03/15</Text>
+          <Text style={styles.joinDate}>Join: {repo.join}</Text>
         </View>
       </Animated.View>
     )
   }
 
   render() {
+    const {state} = this.props.navigation
+    const {repo} = state.params
     const _HeaderHeight = px2dp(HeaderHeight)
     return (
       <CommonDetailFrame
@@ -123,7 +130,7 @@ class UserDetail extends Component{
         top={0}
         bgColorOutputRange={['transparent' , '#00ccff', '#3399cc', '#3399cc']}
         opacityInputRange={[ 0, _HeaderHeight - 50, _HeaderHeight - 10, _HeaderHeight - 10]}
-        boldName='chrisHchen'
+        boldName={repo.owner}
         momentumBgColor='transparent'>
         <View>
           <InfoBox data={data.main} type='strip'/>

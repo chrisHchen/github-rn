@@ -11,12 +11,17 @@ import {
 import RepoItem from '../components/RepoItem';
 import { deviceH, px2dp } from '../utils/index'
 import { HEADER_HEIGHT } from '../components/Header'
+import {data} from '../data'
 
 const containerHeight = deviceH - px2dp(HEADER_HEIGHT) - 20
+const LOADING_OFFSET = 30
 
 class Repository extends Component{
   static navigationOptions = {
-    tabBarLabel: 'REPOSITORY'
+    tabBarLabel: 'REPOSITORY',
+    // tabBarOnPress:(screen) => {
+    //   console.log(screen)
+    // }
   }
 
   constructor(props){
@@ -24,7 +29,7 @@ class Repository extends Component{
     this.state = {
       data: [],
       isLoading: false,
-      isRefreshing: false
+      isRefreshing: false,
     }
     // this.scrollY = 0
     this.contentHeight = 0
@@ -37,27 +42,41 @@ class Repository extends Component{
     })
     setTimeout(() => {
       this.setState({
-        data: [0,1,2,3,4,5],
+        data: data,
         isRefreshing: false
       })
     }, 1000)
   }
 
+  componentWillReceiveProps(nextProps) {
+    const {state} = this.props.navigation
+    const {isRefreshing, reFreshCb} = nextProps.screenProps
+    // console.log(nextProps.screenProps, state.routeName);
+    if(state.routeName === 'REPOSITORY' && isRefreshing) {
+      this.scrollView.scrollTo({x: 0, y: 0, animated: true})
+      setTimeout(() => {
+        this.setState({
+          data: [...data].reverse(),
+        })
+        if(typeof reFreshCb === 'function'){
+          reFreshCb()
+        }
+      }, 1000)
+    }
+  }
+
   loadMore = () => {
-    // console.log(1);
+
     this.setState({
       isLoading: true
     })
-    // this.isLoading = true
     setTimeout(() => {
-      const newData = this.state.data
-      newData.push(1,1)
+      const newData = this.state.data.concat(data)
+      // console.log(newData)
       this.setState({
         data: newData,
-        isLoading: false
       })
-      // this.isLoading = false
-    }, 1000)
+    }, 600)
   }
 
   _onRefresh = () => {
@@ -66,28 +85,32 @@ class Repository extends Component{
     })
     setTimeout(() => {
       this.setState({
-        data: [0,1,2,3,4,5],
+        data: data,
         isRefreshing: false
       })
     }, 1000)
   }
 
-  goDetail = () => {
+  goDetail = (item) => () => {
     const {navigate} = this.props.navigation
-    navigate('RepoDetail', {name: 'x'})
+    navigate('RepoDetail', {repo: item})
   }
 
   handleOnScroll = (event) => {
     const offsetY = event.nativeEvent.contentOffset.y
     const {isLoading} = this.state
     // console.log(offsetY + containerHeight, this.contentHeight);
-    if(!isLoading && this.contentHeight !==0 && offsetY + containerHeight > this.contentHeight) {
+    if(!isLoading && this.contentHeight !==0 && offsetY + containerHeight > this.contentHeight - px2dp(LOADING_OFFSET)) {
       this.loadMore()
     }
   }
 
   handleContentSizeChange = (contentWidth, contentHeight) => {
     this.contentHeight = contentHeight
+    // do state change here to ensure that load is not called multiple times
+    this.setState({
+      isLoading: false
+    })
   }
 
   render() {
@@ -95,6 +118,7 @@ class Repository extends Component{
     // In android ActivityIndicator dont work well(dont know why), use opacity to work around
     return (
       <ScrollView
+        ref={(el) => this.scrollView = el}
         showsVerticalScrollIndicator={false}
         onScroll={this.handleOnScroll}
         scrollEventThrottle={20}
@@ -113,10 +137,10 @@ class Repository extends Component{
           />}>
         {
           data.map((item, index) => (
-            <RepoItem key={index} onPress={this.goDetail}/>
+            <RepoItem item={item} key={index} onPress={this.goDetail(item)}/>
           ))
         }
-        {<ActivityIndicator style={{paddingBottom: 20}} animating={true} style={{opacity: isLoading ? 1: 0}}/>}
+        <ActivityIndicator style={{paddingBottom: 20}} animating={isLoading} />
       </ScrollView>
     );
   }
@@ -125,6 +149,8 @@ class Repository extends Component{
 const styles = StyleSheet.create({
   container: {
     padding: 15,
+    position: 'relative',
+    alignItems: 'center',
     minHeight: containerHeight,
     backgroundColor: '#efefef',
     justifyContent: 'flex-start',

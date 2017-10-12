@@ -16,7 +16,8 @@ class ItemWrapper extends Component{
     super(props)
     this.state = {
       scale: new Animated.Value(0),
-      opacity:new Animated.Value(0)
+      // scale: new Animated.Value(0.3),
+      // opacity:new Animated.Value(0)
     }
   }
 
@@ -25,26 +26,34 @@ class ItemWrapper extends Component{
       this.state.scale,
       {
         toValue: 1,
-        duration: 600
+        useNativeDriver: true
       }
     ).start()
+    // Animated.timing(
+    //   this.state.scaleY,
+    //   {
+    //     toValue: 1,
+    //     duration: 500
+    //   }
+    // ).start()
 
-    Animated.timing(
-      this.state.opacity,
-      {
-        toValue: 1
-      }
-    ).start()
+    // Animated.timing(
+    //   this.state.opacity,
+    //   {
+    //     toValue: 1
+    //   }
+    // ).start()
   }
 
   render() {
     return (
       <Animated.View style={{
         ...this.props.style,
-        opacity: this.state.opacity,
+        // opacity: this.state.opacity,
+        justifyContent: 'center',
         transform: [{scale: this.state.scale}]
       }}>
-        <Button {...this.props} style={{marginBottom: 15}}>
+        <Button {...this.props} style={{marginBottom: 15, justifyContent: 'center'}}>
           <View style={styles.container}>
             {this.props.children}
           </View>
@@ -59,6 +68,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     borderRadius: 6,
     flexDirection: 'row',
+    justifyContent:'center',
     alignItems: 'center',
     padding: containerPadding,
     width: deviceW - 15*2, // for numberOfLines to work

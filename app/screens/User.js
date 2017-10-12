@@ -11,8 +11,10 @@ import {
 import UserItem from '../components/UserItem';
 import { deviceH, px2dp } from '../utils/index'
 import { HEADER_HEIGHT } from '../components/Header'
+import {data} from '../data'
 
 const containerHeight = deviceH - px2dp(HEADER_HEIGHT) - 20
+const LOADING_OFFSET = 50
 
 class User extends Component{
   static navigationOptions = {
@@ -22,7 +24,7 @@ class User extends Component{
   constructor(props){
     super(props)
     this.state = {
-      data: [],
+      data:[],
       isLoading: false,
       isRefreshing: true
     }
@@ -34,10 +36,27 @@ class User extends Component{
     })
     setTimeout(() => {
       this.setState({
-        data: [0,1,2,3,4,5],
+        data: data,
         isRefreshing: false
       })
     }, 1000)
+  }
+
+  componentWillReceiveProps(nextProps) {
+    const {state} = this.props.navigation
+    const {isRefreshing, reFreshCb} = nextProps.screenProps
+    // console.log(nextProps.screenProps, state.routeName);
+    if(state.routeName === 'USER' && isRefreshing) {
+      this.scrollView.scrollTo({x: 0, y: 0, animated: true})
+      setTimeout(() => {
+        this.setState({
+          data: data.reverse(),
+        })
+        if(typeof reFreshCb === 'function'){
+          reFreshCb()
+        }
+      }, 1000)
+    }
   }
 
   loadMore = () => {
@@ -45,13 +64,11 @@ class User extends Component{
       isLoading: true
     })
     setTimeout(() => {
-      const newData = this.state.data
-      newData.push(1,1)
+      const newData = this.state.data.concat(data)
       this.setState({
         data: newData,
-        isLoading: false
       })
-    }, 1000)
+    }, 600)
   }
 
   _onRefresh = () => {
@@ -60,22 +77,22 @@ class User extends Component{
     })
     setTimeout(() => {
       this.setState({
-        data: [0,1,2,3,4,5],
+        data: data,
         isRefreshing: false
       })
-    }, 1500)
+    }, 1000)
   }
 
-  goDetail = () => {
+  goDetail = (item) => () => {
     const {navigate} = this.props.navigation
-    navigate('UserDetail', {name: 'x'})
+    navigate('UserDetail', {repo: item})
   }
 
   handleOnScroll = (event) => {
     const offsetY = event.nativeEvent.contentOffset.y
     const { isLoading } = this.state
     // console.log(offsetY + containerHeight, this.contentHeight);
-    if(!isLoading && this.contentHeight !==0 && offsetY + containerHeight > this.contentHeight) {
+    if(!isLoading && this.contentHeight !==0 && offsetY + containerHeight > this.contentHeight  - px2dp(LOADING_OFFSET)) {
       // console.log('yes');
       this.loadMore()
     }
@@ -83,12 +100,16 @@ class User extends Component{
 
   handleContentSizeChange = (contentWidth, contentHeight) => {
     this.contentHeight = contentHeight
+    this.setState({
+      isLoading: false
+    })
   }
 
   render() {
     const {isLoading, isRefreshing, data} = this.state
     return (
       <ScrollView
+        ref={(el) => this.scrollView = el}
         showsVerticalScrollIndicator={false}
         onScroll={this.handleOnScroll}
         contentContainerStyle={styles.container}
@@ -106,10 +127,10 @@ class User extends Component{
           />}>
         {
           data.map((item, index) => (
-            <UserItem key={index} onPress={this.goDetail}/>
+            <UserItem key={index} item={item} onPress={this.goDetail(item)}/>
           ))
         }
-        {<ActivityIndicator style={{paddingBottom: 20}} animating={true} style={{opacity: isLoading ? 1: 0}}/>}
+        {<ActivityIndicator style={{paddingBottom: 20}} animating={isLoading} />}
       </ScrollView>
     );
   }

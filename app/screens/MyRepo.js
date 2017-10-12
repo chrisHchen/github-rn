@@ -11,6 +11,7 @@ import CommonHeader from '../components/CommonHeader'
 import RepoItem from '../components/RepoItem';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import CommonDetailFrame from '../components/CommonDetailFrame'
+import {myData} from '../data'
 
 class MyRepo extends Component{
 
@@ -25,7 +26,7 @@ class MyRepo extends Component{
   componentDidMount() {
     setTimeout(() => {
       this.setState({
-        data: [0,1,2,3,4,5],
+        data: myData,
       })
     }, 1000)
   }
@@ -34,8 +35,7 @@ class MyRepo extends Component{
     this.setState({
       isLoading: true
     })
-    const newData = this.state.data
-    newData.push(1,1)
+    const newData = this.state.data.concat(myData)
     setTimeout(() => {
       this.setState({
         data: newData,
@@ -49,11 +49,11 @@ class MyRepo extends Component{
     this.props.navigation.navigate('DrawerToggle');
   }
 
-  goDetail = () => {
+  goDetail = (item) => () => {
     const {navigate} = this.props.navigation
-    navigate('RepoDetail', {name: 'x'})
+    navigate('RepoDetail', {repo: item})
   }
-  
+
   render() {
     const { data, isLoading } = this.state
     return (
@@ -74,7 +74,7 @@ class MyRepo extends Component{
           {
             data.length === 0 ? <ActivityIndicator style={{paddingBottom: 20}} animating={true}/> :
             data.map((item, index) => (
-              <RepoItem key={index} onPress={this.goDetail}/>
+              <RepoItem item={item} key={index} onPress={this.goDetail(item)}/>
             ))
           }
         </View>

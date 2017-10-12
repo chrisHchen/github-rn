@@ -10,6 +10,7 @@ import {
 import RepoItem from '../components/RepoItem'
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import CommonDetailFrame from '../components/CommonDetailFrame'
+import {data} from '../data'
 
 class Starred extends Component{
 
@@ -24,7 +25,7 @@ class Starred extends Component{
   componentDidMount() {
     setTimeout(() => {
       this.setState({
-        data: [0,1,2,3,4,5],
+        data: data,
       })
     }, 1000)
   }
@@ -33,8 +34,7 @@ class Starred extends Component{
     this.setState({
       isLoading: true
     })
-    const newData = this.state.data
-    newData.push(1,1)
+    const newData = this.state.data.concat(data)
     setTimeout(() => {
       this.setState({
         data: newData,
@@ -46,6 +46,11 @@ class Starred extends Component{
 
   showSetting = () => {
     this.props.navigation.navigate('DrawerToggle');
+  }
+
+  goDetail = (item) => () => {
+    const {navigate} = this.props.navigation
+    navigate('RepoDetail', {repo: item})
   }
 
   render() {
@@ -68,7 +73,7 @@ class Starred extends Component{
           {
             data.length === 0 ? <ActivityIndicator style={{paddingBottom: 20}} animating={true}/> :
             data.map((item, index) => (
-              <RepoItem key={index}/>
+              <RepoItem item={item} key={index} onPress={this.goDetail(item)}/>
             ))
           }
         </View>

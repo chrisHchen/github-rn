@@ -65,28 +65,32 @@ class RepoDetail extends Component{
   }
 
   _renderHeaderDesc = () => {
+    const {state} = this.props.navigation
+    const {repo} = state.params
     return (
       <View style={{flexDirection: 'row', width: deviceW, justifyContent: 'space-between', alignItems: 'center'}}>
         <View>
           <Text numberOfLines={5} style={styles.descContent}>
-            Used to truncate the text with an ellipsis after computing the text layout, including line wrapping, such that the total number of lines does not exceed this number.
+            {repo.desc}
           </Text>
-          <Text style={{color: '#efefef'}}>Create at 2017/02/11</Text>
+          <Text style={{color: '#efefef'}}>{repo.created}</Text>
         </View>
         <ImageRender
-          source={{uri: 'https://avatars2.githubusercontent.com/u/13569505?v=6&s=100'}}
+          source={{uri: `${repo.avatar}?v=6&s=120`}}
           width={deviceW/3 - 46}/>
       </View>
     )
   }
 
   render() {
+    const {state} = this.props.navigation
+    const {repo} = state.params
     return (
       <CommonDetailFrame
         navigation={this.props.navigation}
         headerDesc={this._renderHeaderDesc()}
         headerDescStyle={styles.headerDesc}
-        boldName='RxJava'>
+        boldName={repo.name}>
         <View>
           <InfoBox data={data.main} type='strip'/>
           <InfoBox data={data.event} />
