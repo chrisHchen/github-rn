@@ -66,7 +66,7 @@ class Starred extends Component{
         }
         boldName='Starred'
         ActivityIndicator={
-          <ActivityIndicator style={{paddingBottom: 20}} animating={true} style={{opacity: isLoading ? 1: 0}}/>
+          isLoading && <ActivityIndicator animating={isLoading}/>
         }
         onLoadMore={this.loadMore}>
         <View>

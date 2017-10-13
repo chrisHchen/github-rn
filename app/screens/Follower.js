@@ -116,7 +116,7 @@ class Follower extends Component{
             <UserItem item={item} key={index} onPress={this.goDetail(item)}/>
           ))
         }
-        {<ActivityIndicator style={{paddingBottom: 20}} animating={true} style={{opacity: isLoading ? 1: 0}}/>}
+        {isLoading && <ActivityIndicator animating={isLoading}/>}
       </ScrollView>
     );
   }
@@ -125,6 +125,7 @@ class Follower extends Component{
 const styles = StyleSheet.create({
   container: {
     padding: 15,
+    paddingBottom: 30,
     minHeight: containerHeight,
     backgroundColor: '#efefef',
     justifyContent: 'flex-start',

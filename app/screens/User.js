@@ -14,7 +14,7 @@ import { HEADER_HEIGHT } from '../components/Header'
 import {data} from '../data'
 
 const containerHeight = deviceH - px2dp(HEADER_HEIGHT) - 20
-const LOADING_OFFSET = 50
+const LOADING_OFFSET = 60
 
 class User extends Component{
   static navigationOptions = {
@@ -25,9 +25,9 @@ class User extends Component{
     super(props)
     this.state = {
       data:[],
-      isLoading: false,
       isRefreshing: true
     }
+    this.isLoading = false
   }
 
   componentDidMount() {
@@ -60,24 +60,23 @@ class User extends Component{
   }
 
   loadMore = () => {
-    this.setState({
-      isLoading: true
-    })
+    this.isLoading = true
     setTimeout(() => {
       const newData = this.state.data.concat(data)
       this.setState({
         data: newData,
       })
+      this.isLoading = false
     }, 600)
   }
 
-  _onRefresh = () => {
+  onRefresh = () => {
     this.setState({
       isRefreshing: true
     })
     setTimeout(() => {
       this.setState({
-        data: data,
+        data: [...data].reverse(),
         isRefreshing: false
       })
     }, 1000)
@@ -90,9 +89,8 @@ class User extends Component{
 
   handleOnScroll = (event) => {
     const offsetY = event.nativeEvent.contentOffset.y
-    const { isLoading } = this.state
     // console.log(offsetY + containerHeight, this.contentHeight);
-    if(!isLoading && this.contentHeight !==0 && offsetY + containerHeight > this.contentHeight  - px2dp(LOADING_OFFSET)) {
+    if(!this.isLoading && this.contentHeight !==0 && offsetY + containerHeight > this.contentHeight  - px2dp(LOADING_OFFSET)) {
       // console.log('yes');
       this.loadMore()
     }
@@ -100,13 +98,10 @@ class User extends Component{
 
   handleContentSizeChange = (contentWidth, contentHeight) => {
     this.contentHeight = contentHeight
-    this.setState({
-      isLoading: false
-    })
   }
 
   render() {
-    const {isLoading, isRefreshing, data} = this.state
+    const {isRefreshing, data} = this.state
     return (
       <ScrollView
         ref={(el) => this.scrollView = el}
@@ -119,7 +114,7 @@ class User extends Component{
         refreshControl={
           <RefreshControl
             refreshing={isRefreshing}
-            onRefresh={this._onRefresh}
+            onRefresh={this.onRefresh}
             tintColor="#bbb"
             style={{flex:1, backgroundColor:'#efefef'}}
             colors={['#ddd', '#0398ff']}
@@ -130,7 +125,7 @@ class User extends Component{
             <UserItem key={index} item={item} onPress={this.goDetail(item)}/>
           ))
         }
-        {<ActivityIndicator style={{paddingBottom: 20}} animating={isLoading} />}
+        {!isRefreshing && <ActivityIndicator animating={true} />}
       </ScrollView>
     );
   }
@@ -139,6 +134,7 @@ class User extends Component{
 const styles = StyleSheet.create({
   container: {
     padding: 15,
+    paddingBottom: 30,
     minHeight: containerHeight,
     backgroundColor: '#efefef',
     justifyContent: 'flex-start',

@@ -15,7 +15,7 @@ export const HeaderHeight = 160
 export const BG_HEIGHT = HeaderHeight + CommonHeaderHeight
 export const containerHeight = deviceH - 20
 
-const offsetBottom = 20 // offset at the bottom for loadMore to start
+const offsetBottom = 40 // offset at the bottom for loadMore to start
 const translateX = 25
 const scale = 0.7
 
@@ -57,7 +57,7 @@ class CommonDetailFrame extends Component{
       // translateY: scrollY.interpolate({inputRange: [ 0, _HeaderHeight, _HeaderHeight + 100], outputRange: [0 , 0 , 100]}),
       // transHeaderBar : scrollY.interpolate({inputRange: [ 0, 0, _HeaderHeight, _HeaderHeight], outputRange: [0, 0 , _HeaderHeight, _HeaderHeight]}),
       translateX : scrollY.interpolate({inputRange: [ 0, 0, _HeaderHeight, _HeaderHeight], outputRange: [0, 0 , _translateX, _translateX]}),
-      scale : scrollY.interpolate({inputRange: [ 0, 0, _HeaderHeight, _HeaderHeight], outputRange: [1, 1 , scale, scale]}),
+      scale : scrollY.interpolate({inputRange: [ 0, 0, _HeaderHeight - 20, _HeaderHeight - 20], outputRange: [1, 1 , scale, scale]}),
       opacity : scrollY.interpolate({inputRange: opacityInputRange, outputRange: [1, 1 , 0, 0]}),
       top : scrollY.interpolate({inputRange: [ 0, 0, _HeaderHeight], outputRange: [top, top, top  + px2dp(80)]}),
       backgroundColor : scrollY.interpolate({inputRange: bgColorInputRange, outputRange: bgColorOutputRange}),
@@ -164,11 +164,11 @@ class CommonDetailFrame extends Component{
 
     const offsetY = event.nativeEvent.contentOffset.y
     // console.log(offsetY);
-    if(offsetY >= px2dp(HeaderHeight) && !isStaticHeaderShow){
+    if(offsetY >= (px2dp(HeaderHeight) - px2dp(5)) && !isStaticHeaderShow){
       this.setState({
         isStaticHeaderShow: true
       })
-    } else if(offsetY < px2dp(HeaderHeight) && isStaticHeaderShow){
+    } else if(offsetY < (px2dp(HeaderHeight) - px2dp(5)) && isStaticHeaderShow){
       this.setState({
         isStaticHeaderShow: false
       })
@@ -203,20 +203,20 @@ class CommonDetailFrame extends Component{
       <View style={styles.box}>
           {this._renderStaticHeader()}
           {this._renderCommonHeader()}
-          <Animated.ScrollView
+          <ScrollView
             style={{flex:1, backgroundColor: ScrollViewBgColor}}
             onScroll={this.handleOnScroll}
             contentContainerStyle={{justifyContent: 'flex-start'}}
             showsVerticalScrollIndicator={false}
-            scrollEventThrottle={1}
+            scrollEventThrottle={16}
             onContentSizeChange={this.handleContentSizeChange}
             >
               {this._renderHeaderBg()}
-              <View style={{padding: 15, backgroundColor: '#eee'}}>
+              <View style={{padding: 15, backgroundColor: '#eee', paddingBottom: 30}}>
                 { this.props.children }
+                {this.props.ActivityIndicator}
               </View>
-              {this.props.ActivityIndicator}
-          </Animated.ScrollView>
+          </ScrollView>
       </View>
     );
   }

@@ -67,7 +67,7 @@ class MyRepo extends Component{
         }
         boldName='Repository'
         ActivityIndicator={
-          <ActivityIndicator style={{paddingBottom: 20}} animating={true} style={{opacity: isLoading ? 1: 0}}/>
+          isLoading && <ActivityIndicator animating={isLoading}/>
         }
         onLoadMore={this.loadMore}>
         <View>

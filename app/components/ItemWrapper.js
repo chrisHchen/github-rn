@@ -15,7 +15,7 @@ class ItemWrapper extends Component{
   constructor(props) {
     super(props)
     this.state = {
-      scale: new Animated.Value(0),
+      scale: new Animated.Value(.5),
       // scale: new Animated.Value(0.3),
       // opacity:new Animated.Value(0)
     }

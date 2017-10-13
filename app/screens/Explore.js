@@ -66,7 +66,7 @@ class Explore extends Component{
         <MainTabNavigator
           navigation={this.props.navigation}
           screenProps={screenProps}/>
-        <ActivityIndicator style={styles.indicator} animating={isRefreshing} size='large' />
+        {isRefreshing && <ActivityIndicator style={styles.indicator} animating={isRefreshing} size='large' />}
       </View>
     )
   }
